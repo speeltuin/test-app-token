@@ -25,18 +25,24 @@ jobs:
         run: echo "Successfully authenticated as the GitHub App!"
 
       - name: Get Bot User Details
+        id: bot-details
         run: |
-          # Get the installation info
-          INSTALLATION_DATA=$(gh api installation/repositories --idempotent)
-
-          # Extract the 'slug' (app name) or look at the 'owner' of the first repo
-          # For an Org installation, the owner might be the Org,
-          # so we use 'gh auth status' or 'gh api /app' with the token to be precise.
-
-          echo "Bot Details:"
-          gh api /installation/repositories --jq '.repositories[0].owner | "Name: \(.login), ID: \(.id)"'
-
-          # Best method for the specific Bot user identity:
-          gh auth status
+          # 1. Get the App Slug (name) from the authenticated app info
+          # Note: Even with an installation token, this specific metadata is visible
+          APP_NAME=$(gh api /apps/${{ steps.generate-token.outputs.app-slug }} --jq '.name')
+          
+          # 2. Get the Bot User info
+          # The login is always "slug[bot]"
+          BOT_LOGIN="${{ steps.generate-token.outputs.app-slug }}[bot]"
+          
+          # 3. Fetch the actual numerical User ID for the bot
+          BOT_USER_ID=$(gh api "users/$BOT_LOGIN" --jq '.id')
+          
+          echo "Bot Login: $BOT_LOGIN"
+          echo "Bot User ID: $BOT_USER_ID"
+          
+          # Set as outputs for later steps
+          echo "bot_login=$BOT_LOGIN" >> $GITHUB_OUTPUT
+          echo "bot_user_id=$BOT_USER_ID" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
