@@ -16,9 +16,8 @@ jobs:
 
       - name: Verify Token Identity
         run: |
-          # Use the generated token with the GitHub CLI
-          echo "Checking identity..."
-          gh api app --method GET -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}"
+          echo "Checking accessible repositories..."
+          gh api installation/repositories --jq '.repositories[].full_name'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
