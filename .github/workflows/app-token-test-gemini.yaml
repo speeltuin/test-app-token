@@ -18,7 +18,7 @@ jobs:
         run: |
           # Use the generated token with the GitHub CLI
           echo "Checking identity..."
-          gh api user --method GET -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}"
+          gh api app --method GET -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}"
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
