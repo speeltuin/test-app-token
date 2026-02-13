@@ -1,0 +1,46 @@
+name: Test GitHub App Token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-app-token:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Show token metadata
+        run: |
+          echo "Token created for installation: ${{ steps.app-token.outputs.installation-id }}"
+          echo "Token expires at: ${{ steps.app-token.outputs.expires-at }}"
+
+      - name: Verify token works (simple API call)
+        run: |
+          curl -s -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+               -H "Accept: application/vnd.github+json" \
+               https://api.github.com/user
+
+      - name: Verify repo access
+        run: |
+          curl -s -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+               -H "Accept: application/vnd.github+json" \
+               https://api.github.com/repos/${{ github.repository }}
+
+      - name: Attempt a write operation (optional)
+        if: false  # set to true once you're ready
+        run: |
+          curl -X POST \
+               -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+               -H "Accept: application/vnd.github+json" \
+               https://api.github.com/repos/${{ github.repository }}/issues \
+               -d '{"title":"App token test issue"}'
