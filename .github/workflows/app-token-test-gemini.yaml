@@ -39,9 +39,9 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
-      - name: Displa BOT Details
+      - name: Display BOT Details
         run: |
-          printf "bot.id = %s\n" ${{ steps.bot-id.outputs.id }}
-          printf "bot.name = %s\n" ${{ steps.bot-id.outputs.name }}
-          printf "bot.email = %s\n" ${{ steps.bot-id.outputs.email }}
-          printf "bot.full-name = %s\n" ${{ steps.bot-id.outputs.full-name }}
+          printf "bot.id = %s\n" "${{ steps.bot-id.outputs.id }}"
+          printf "bot.name = %s\n" "${{ steps.bot-id.outputs.name }}"
+          printf "bot.email = %s\n" "${{ steps.bot-id.outputs.email }}"
+          printf "bot.full-name = %s\n" "${{ steps.bot-id.outputs.full-name }}"
