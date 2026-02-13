@@ -32,16 +32,16 @@ jobs:
           BOT_EMAIL="${BOT_ID}+${BOT_LOGIN}@users.noreply.github.com"
           BOT_FULL_NAME="${BOT_LOGIN} <${BOT_EMAIL}>"
 
-          printf "id=${BOT_ID}" >> ${GITHUB_OUTPUT}
-          printf "name=${BOT_LOGIN}" >> ${GITHUB_OUTPUT}
-          printf "email=${BOT_EMAIL}" >> ${GITHUB_OUTPUT}
-          printf "full-name=${BOT_FULL_NAME}" >> ${GITHUB_OUTPUT}
+          echo "id=${BOT_ID}" >> ${GITHUB_OUTPUT}
+          echo "name=${BOT_LOGIN}" >> ${GITHUB_OUTPUT}
+          echo "email=${BOT_EMAIL}" >> ${GITHUB_OUTPUT}
+          echo "full-name=${BOT_FULL_NAME}" >> ${GITHUB_OUTPUT}
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Display BOT Details
         run: |
-          printf "bot.id = %s\n" "${{ steps.bot-id.outputs.id }}"
-          printf "bot.name = %s\n" "${{ steps.bot-id.outputs.name }}"
-          printf "bot.email = %s\n" "${{ steps.bot-id.outputs.email }}"
-          printf "bot.full-name = %s\n" "${{ steps.bot-id.outputs.full-name }}"
+          echo "bot.id = ${{ steps.bot-id.outputs.id }}"
+          echo "bot.name = ${{ steps.bot-id.outputs.name }}"
+          echo "bot.email = ${{ steps.bot-id.outputs.email }}"
+          echo "bot.full-name = ${{ steps.bot-id.outputs.full-name }}"
