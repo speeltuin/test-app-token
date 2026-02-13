@@ -23,3 +23,20 @@ jobs:
 
       - name: Success Check
         run: echo "Successfully authenticated as the GitHub App!"
+
+      - name: Get Bot User Details
+        run: |
+          # Get the installation info
+          INSTALLATION_DATA=$(gh api installation/repositories --idempotent)
+
+          # Extract the 'slug' (app name) or look at the 'owner' of the first repo
+          # For an Org installation, the owner might be the Org,
+          # so we use 'gh auth status' or 'gh api /app' with the token to be precise.
+
+          echo "Bot Details:"
+          gh api /installation/repositories --jq '.repositories[0].owner | "Name: \(.login), ID: \(.id)"'
+
+          # Best method for the specific Bot user identity:
+          gh auth status
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
