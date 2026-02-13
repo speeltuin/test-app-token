@@ -1,0 +1,26 @@
+name: Verify GitHub App Token
+
+on:
+  workflow_dispatch: # Allows you to run this manually for testing
+
+jobs:
+  test-app-auth:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Verify Token Identity
+        run: |
+          # Use the generated token with the GitHub CLI
+          echo "Checking identity..."
+          gh api user --method GET -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}"
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+
+      - name: Success Check
+        run: echo "Successfully authenticated as the GitHub App!"
